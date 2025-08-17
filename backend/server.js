@@ -1,26 +1,36 @@
-
+require('dotenv').config();                 // load .env first
 const express = require('express');
-const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const connectDB = require('./config/db');
 
-dotenv.config();
-
+mongoose.set('strictQuery', false);         // silence warning
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
-app.use('/api/auth', require('./routes/authRoutes'));
-//app.use('/api/tasks', require('./routes/taskRoutes'));
 
-// Export the app object for testing
-if (require.main === module) {
-    connectDB();
-    // If the file is run directly, start the server
-    const PORT = process.env.PORT || 5001;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  }
+// --- Mongo connection ---
+const uri = process.env.MONGO_URI;
+if (!uri) {
+  console.error('❌ MONGO_URI missing. Create backend/.env and set MONGO_URI=');
+  process.exit(1);
+}
+mongoose.connect(uri, { autoIndex: true })
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+    process.exit(1);
+  });
 
+// health check (optional)
+app.get('/api/health', (req, res) => res.send('ok'));
 
-module.exports = app
+// routes
+app.use('/api/v1/donors', require('./routes/donors'));
+
+app.use('/api/v1/request', require('./routes/request'));
+console.log('Mounted /api/v1/requests');
+
+const PORT = process.env.PORT || 5001;
+app.post('/api/v1/request', (req, res) => res.json({ ok: true, echo: req.body }));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
