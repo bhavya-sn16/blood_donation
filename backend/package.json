@@ -1,31 +1,7 @@
 {
-  "name": "task-manager-backend",
-  "version": "1.0.0",
-  "description": "Backend for Task Manager App",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "jest --runInBand"
-  },
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "chai": "^4.5.0",
-    "chai-http": "^4.3.0",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.13.8",
-    "request": "^2.88.2",
-    "task-manager": "file:.."
-  },
-  "devDependencies": {
-    "esm": "^3.2.25",
-    "jest": "^30.0.5",
-    "mocha": "^11.0.1",
-    "nodemon": "^2.0.15",
-    "sinon": "^19.0.5"
-  },
-  "author": "Task Manager Team",
-  "license": "ISC"
+    "dev": "concurrently \"npm:dev:back\" \"npm:dev:front\"",
+    "dev:back": "npm --prefix backend run dev",
+    "dev:front": "npm --prefix frontend start"
+  }
 }

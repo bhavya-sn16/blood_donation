@@ -28,8 +28,10 @@ app.get('/api/health', (req, res) => res.send('ok'));
 // routes
 app.use('/api/v1/donors', require('./routes/donors'));
 
-app.use('/api/v1/request', require('./routes/request'));
+app.use('/api/v1/request', require('./routes/requests'));
 console.log('Mounted /api/v1/requests');
+app.use('/api/v1/requests', require('./routes/requests')); // <- use the single-file router
+
 
 const PORT = process.env.PORT || 5001;
 app.post('/api/v1/request', (req, res) => res.json({ ok: true, echo: req.body }));
